@@ -1,15 +1,17 @@
 import os
 import discord
 import random
-from mosquitoman import ping
+import requests
+import shutil
+from toascii import ImageConverter
 
 import c4
 from c4 import c4match
 
 #Private variables - Start
 
-#fishi
-#token
+fishi = 338948153627901963
+token = "NjM5NjQ2MTkzNTQ2Mjk3MzU0.XbuS8A.IhH1zmfkTWt54ithmCc_qO2xmPs"
 
 #Private variables - End
 
@@ -37,14 +39,31 @@ async def on_message(message):
             await message.add_reaction("\U0001f1e7")
             await message.add_reaction("\U0001f1ee")
             await message.add_reaction("\U0001f1ec")
-
     if message.content == "nice":
         await message.add_reaction("\U0001f1f3")
         await message.add_reaction("\U0001f1ee")
         await message.add_reaction("\U0001f1e8")
         await message.add_reaction("\U0001f1ea")
 
-#Connect Four! - Start
+    if len(message.attachments) > 0:
+        r = requests.get(message.attachments[0], stream = True)
+        r.raw.decode_content = True
+
+        with open("local.jpg",'wb') as f:
+            shutil.copyfileobj(r.raw, f)
+        image = ImageConverter("local.jpg", 0.05, 1.5, "-~+#@").convert()
+        if len(image.ascii_image) < 2000:
+            await message.channel.send(image.ascii_image)            
+        await message.channel.send(str(len(image.ascii_image)) + " characters")
+        if os.path.exists("local.jpg"):
+            os.remove("local.jpg")
+
+    if message.content.startswith("rand"):
+        t = message.content.split()
+        a = random.randint(int(t[1]), int(t[2]))
+        await message.channel.send(a)
+
+    #Connect Four! - Start
 
     if message.content.startswith("c4"):
         s = message.content.split()
@@ -55,7 +74,7 @@ async def on_message(message):
                 match = c4match.play(message.author, message.mentions[0], message.channel)
             else:
                 match = c4.getMatch(chckp)
-                embedContent = chckp.mention + " currently has an active Connect Four match!\nSettle the active match first or abandon it by typing *" + prefix + "c4 leave*\n"
+                embedContent = chckp.mention + " currently has an active Connect Four match!\nSettle the active match first or abandon it by typing " + prefix + "*c4 leave*\n"
                 
                 e = discord.Embed(title = "", description = embedContent, color=0x009999)
                 await message.channel.send(embed = e)
@@ -102,12 +121,13 @@ async def on_message(message):
     #Connect Four! - End
 
     if message.content.startswith("test"):
-        e = discord.Embed(description = message.author.mention + "Desc \n test line", color=0xff00ff)
+        e = discord.Embed(description = str(message.author.id) + message.author.mention + " Desc \n test line " + str(message.author) + "\n" + str(message.channel) + "\n" + str(message.channel.guild), color=0xff00ff)
         e.add_field(name = "test name", value = "another text", inline = True)
+        e.set_footer(text = "actual bottom text", icon_url = "https://cdn.discordapp.com/attachments/455334275772841984/851906808133451826/Eq0Sh6OUUAMWfv5.jpg")
         await message.channel.send(embed = e)
 
-    if message.content == bot.user.mention:
+    if bot.user in message.mentions:
         await message.channel.send("https://pics.me.me/awaken-42160286.png")
 
-ping()
-bot.run(os.environ['discToken'])
+
+bot.run(token)
