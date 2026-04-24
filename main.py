@@ -144,7 +144,7 @@ async def on_message(message):
     
     await bot.process_commands(message)
 
-@tasks.loop(minutes=10)
+@tasks.loop(minutes=1)
 async def timedmessage():
     if structpingchannel:
         await structpingchannel.send("timed message")

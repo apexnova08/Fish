@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 dir = os.path.dirname(os.path.realpath(__file__))
 
 CLIENT_ID = "19c85a65b9b948d784d6bd75f6ef3c55"
-REDIRECT_URI = "http://localhost:5000/callback"
+REDIRECT_URI = "https://fish-8v65.onrender.com/callback"
 SCOPES = "esi-corporations.read_structures.v1"
 
 def make_auth_url(discord_user_id):
