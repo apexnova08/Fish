@@ -3,7 +3,7 @@ import discord
 import random
 import requests
 import shutil
-from toascii import ImageConverter
+#from toascii import ImageConverter
 
 import c4
 from c4 import c4match
@@ -45,7 +45,7 @@ async def on_message(message):
         await message.add_reaction("\U0001f1e8")
         await message.add_reaction("\U0001f1ea")
 
-    if len(message.attachments) > 0:
+    '''if len(message.attachments) > 0:
         r = requests.get(message.attachments[0], stream = True)
         r.raw.decode_content = True
 
@@ -56,7 +56,7 @@ async def on_message(message):
             await message.channel.send(image.ascii_image)            
         await message.channel.send(str(len(image.ascii_image)) + " characters")
         if os.path.exists("local.jpg"):
-            os.remove("local.jpg")
+            os.remove("local.jpg")'''
 
     if message.content.startswith("rand"):
         t = message.content.split()
