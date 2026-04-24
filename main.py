@@ -1,7 +1,6 @@
 import discord
 from discord.ext import tasks, commands
 import logging
-from dotenv import load_dotenv
 import os
 import random
 import eve
@@ -9,8 +8,6 @@ import web
 
 import c4
 from c4 import c4match
-
-load_dotenv()
 
 token = os.getenv("DISCORD_TOKEN")
 
