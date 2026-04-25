@@ -12,7 +12,7 @@ REDIRECT_URI = "https://fish-8v65.onrender.com/callback"
 SCOPES = "esi-corporations.read_structures.v1"
 
 def make_auth_url(discord_user_id):
-    state = str(discord_user_id)  # 👈 important
+    state = str(discord_user_id)
 
     return (
         "https://login.eveonline.com/v2/oauth/authorize?"
