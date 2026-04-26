@@ -6,6 +6,7 @@ import random
 import eve
 import web
 import requests
+import funcsnfish as ff
 
 import c4
 from c4 import c4match
@@ -27,11 +28,6 @@ URL = "https://fish-8v65.onrender.com/"
 structstates = {}
 
 @bot.event
-async def on_ready():
-    if not keepawake.is_running():
-        keepawake.start()
-
-
 async def on_message(message):
     if message.author == bot.user:
         return
@@ -76,7 +72,7 @@ async def on_message(message):
             await message.channel.send(embed = e)
         print(structsdict)
 
-    if " pp " in message.content.lower() or message.content.lower().startswith("pp ") or message.content.lower().endswith(" pp") or message.content.lower() == "pp":
+    if ff.wordInString("pp", message.content.lower()):
         a = random.randint(1, 2)
         if a == 2:
             await message.add_reaction("\U0001f1f8")
@@ -87,7 +83,7 @@ async def on_message(message):
             await message.add_reaction("\U0001f1e7")
             await message.add_reaction("\U0001f1ee")
             await message.add_reaction("\U0001f1ec")
-    if message.content == "nice":
+    if ff.wordInString("nice", message.content.lower()) or ff.wordInString("69", message.content.lower()):
         await message.add_reaction("\U0001f1f3")
         await message.add_reaction("\U0001f1ee")
         await message.add_reaction("\U0001f1e8")
