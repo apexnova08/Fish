@@ -26,14 +26,12 @@ bot = commands.Bot(command_prefix=prefix, intents=intents)
 # VARS #
 URL = "https://fish-8v65.onrender.com/"
 structstates = {}
-
-@bot.event
+'''
 async def on_ready():
     print(f"Logged in as {bot.user}")
-    '''
     if not keepawake.is_running():
         keepawake.start()'''
-
+@bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
