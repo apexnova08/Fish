@@ -52,9 +52,9 @@ async def on_message(message):
                 await message.channel.send("Ping failed:", e)
 
         if message.content.lower() == "dm1":
-            message.author.send("test message")
+            await message.author.send("test message")
         if message.content.lower() == "dm2":
-            masteruser.send("test message")
+            await masteruser.send("test message")
 
         if message.content.lower() == (f"{prefix}evelogin"):
             await message.channel.send(eve.make_auth_url(message.author.id))
