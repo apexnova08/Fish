@@ -5,6 +5,7 @@ import os
 import random
 import eve
 import web
+import requests
 
 import c4
 from c4 import c4match
@@ -21,6 +22,7 @@ bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 
 # VARS #
+URL = "https://fish-8v65.onrender.com/"
 structstates = {}
 
 @bot.event
@@ -144,7 +146,15 @@ async def on_message(message):
     
     await bot.process_commands(message)
 
-@tasks.loop(minutes=1)
+@tasks.loop(minutes=10)
+async def keepawake():
+    try:
+        r = requests.get(URL)
+        print("Ping status:", r.status_code)
+    except Exception as e:
+        print("Ping failed:", e)
+
+@tasks.loop(minutes=20)
 async def timedmessage():
     if structpingchannel:
         await structpingchannel.send("timed message")
