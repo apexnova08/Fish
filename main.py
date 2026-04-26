@@ -32,9 +32,6 @@ async def on_ready():
     if not keepawake.is_running():
         keepawake.start()'''
 @bot.event
-async def on_ready():
-    masteruser.send(f"Logged in as {bot.user}")
-
 async def on_message(message):
     if message.author == bot.user:
         return
