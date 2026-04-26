@@ -21,7 +21,7 @@ intents.members = True
 
 prefix = '>'
 bot = commands.Bot(command_prefix=prefix, intents=intents)
-
+masteruser = bot.fetch_user(master)
 
 # VARS #
 URL = "https://fish-8v65.onrender.com/"
@@ -32,6 +32,9 @@ async def on_ready():
     if not keepawake.is_running():
         keepawake.start()'''
 @bot.event
+async def on_ready():
+    masteruser.send(f"Logged in as {bot.user}")
+
 async def on_message(message):
     if message.author == bot.user:
         return
