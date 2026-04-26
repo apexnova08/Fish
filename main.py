@@ -22,6 +22,7 @@ bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 
 # VARS #
+master = 338948153627901963
 URL = "https://fish-8v65.onrender.com/"
 structstates = {}
 
@@ -92,7 +93,7 @@ async def on_message(message):
         await message.add_reaction("\U0001f1e8")
         await message.add_reaction("\U0001f1ea")
 
-        #Connect Four! - Start
+    #Connect Four! - Start
 
     if message.content.startswith("c4 "):
         s = message.content.split()
@@ -156,6 +157,7 @@ async def keepawake():
     try:
         r = requests.get(URL)
         print("Ping status:", r.status_code)
+        print("sex in da jungle")
     except Exception as e:
         print("Ping failed:", e)
 
