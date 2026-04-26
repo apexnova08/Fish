@@ -46,7 +46,7 @@ async def on_message(message):
 
         if message.content.lower() == "ping":
             r = requests.get(URL)
-            await structpingchannel.send("Ping status:", r.status_code)
+            await message.channel.send("Ping status:", r.status_code)
 
         if message.content.lower() == (f"{prefix}evelogin"):
             await message.channel.send(eve.make_auth_url(message.author.id))
