@@ -53,7 +53,7 @@ async def on_message(message):
 
         if message.content.lower() == "dm1":
             message.author.send("test message")
-        if message.content.lower() == "dm1":
+        if message.content.lower() == "dm2":
             masteruser.send("test message")
 
         if message.content.lower() == (f"{prefix}evelogin"):
