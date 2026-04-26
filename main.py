@@ -30,8 +30,9 @@ structstates = {}
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
+    '''
     if not keepawake.is_running():
-        keepawake.start()
+        keepawake.start()'''
 
 async def on_message(message):
     if message.author == bot.user:
@@ -44,6 +45,10 @@ async def on_message(message):
             structpingchannel = message.channel
             await structpingchannel.send(type(structpingchannel))
             timedmessage.start()
+
+        if message.content.lower() == "ping":
+            r = requests.get(URL)
+            await structpingchannel.send("Ping status:", r.status_code)
 
         if message.content.lower() == (f"{prefix}evelogin"):
             await message.channel.send(eve.make_auth_url(message.author.id))
