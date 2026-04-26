@@ -45,8 +45,11 @@ async def on_message(message):
             timedmessage.start()
 
         if message.content.lower() == "ping":
-            r = requests.get(URL)
-            await message.channel.send("Ping status:", r.status_code)
+            try:
+                r = requests.get(URL)
+                await message.channel.send("Ping status:", r.status_code)
+            except Exception as e:
+                print("Ping failed:", e)
 
         if message.content.lower() == (f"{prefix}evelogin"):
             await message.channel.send(eve.make_auth_url(message.author.id))
