@@ -12,25 +12,24 @@ import c4
 from c4 import c4match
 
 token = os.getenv("DISCORD_TOKEN")
+master = os.getenv("MASTER")
 
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-prefix = './'
+prefix = '>'
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 
 # VARS #
-master = 338948153627901963
 URL = "https://fish-8v65.onrender.com/"
 structstates = {}
 
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
-
     if not keepawake.is_running():
         keepawake.start()
 
@@ -40,7 +39,7 @@ async def on_message(message):
     
     ### MASTER - STARTE ###
     global structpingchannel
-    if message.author == master:
+    if message.author.id == master:
         if message.content.lower() == "test":
             structpingchannel = message.channel
             await structpingchannel.send(type(structpingchannel))
