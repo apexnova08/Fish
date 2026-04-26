@@ -38,20 +38,22 @@ async def on_message(message):
     if message.author == bot.user:
         return
     
+    ### MASTER - STARTE ###
     global structpingchannel
-    if message.content.lower() == "test":
-        structpingchannel = message.channel
-        await structpingchannel.send(type(structpingchannel))
-        timedmessage.start()
+    if message.author == master:
+        if message.content.lower() == "test":
+            structpingchannel = message.channel
+            await structpingchannel.send(type(structpingchannel))
+            timedmessage.start()
 
-    if message.content.lower() == (f"{prefix}evelogin"):
-        await message.channel.send(eve.make_auth_url(message.author.id))
+        if message.content.lower() == (f"{prefix}evelogin"):
+            await message.channel.send(eve.make_auth_url(message.author.id))
 
-    if message.content.lower() == (f"{prefix}info"):
-        await message.channel.send(eve.get_character_info("2123045230", message.author.id))
+        if message.content.lower() == (f"{prefix}info"):
+            await message.channel.send(eve.get_character_info("2123045230", message.author.id))
 
-    if message.content.lower() == (f"{prefix}verify"):
-        await message.channel.send(eve.verify_token(message.author.id))
+        if message.content.lower() == (f"{prefix}verify"):
+            await message.channel.send(eve.verify_token(message.author.id))
 
     global structstates
     if message.content.lower() == (f"{prefix}structs"):
