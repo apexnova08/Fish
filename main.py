@@ -26,11 +26,15 @@ masteruser = bot.fetch_user(master)
 # VARS #
 URL = "https://fish-8v65.onrender.com/"
 structstates = {}
-'''
+
+@bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}")
+    global masteruser
+    masteruser = await bot.fetch_user(master)
+    await masteruser.send("https://cdn.discordapp.com/attachments/1379858761417494560/1497956290394062978/awake-woke.gif?ex=69ef6802&is=69ee1682&hm=a913f9234c5993185ecfb9404fcbb5023a344004edc365adaec5ecb46e777f64")
     if not keepawake.is_running():
-        keepawake.start()'''
+        keepawake.start()
+
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
