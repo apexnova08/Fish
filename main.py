@@ -21,7 +21,7 @@ intents.members = True
 
 prefix = '>'
 bot = commands.Bot(command_prefix=prefix, intents=intents)
-masteruser = bot.fetch_user(master)
+
 
 # VARS #
 URL = "https://fish-8v65.onrender.com/"
@@ -29,36 +29,31 @@ structstates = {}
 
 @bot.event
 async def on_ready():
-    global masteruser
-    masteruser = await bot.fetch_user(master)
-    await masteruser.send("https://cdn.discordapp.com/attachments/1379858761417494560/1497956290394062978/awake-woke.gif?ex=69ef6802&is=69ee1682&hm=a913f9234c5993185ecfb9404fcbb5023a344004edc365adaec5ecb46e777f64")
-    if not keepawake.is_running():
-        keepawake.start()
+    global masterUser
+    masterUser = await bot.fetch_user(master)
+    await masterUser.send("https://cdn.discordapp.com/attachments/1379858761417494560/1497956290394062978/awake-woke.gif?ex=69ef6802&is=69ee1682&hm=a913f9234c5993185ecfb9404fcbb5023a344004edc365adaec5ecb46e777f64")
+    if not keepAwake.is_running():
+        keepAwake.start()
 
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
     
-    ### MASTER - STARTE ###
-    global structpingchannel
+    # -------------------
+    # MASTER - STARTE
+    # -------------------
+    global structPingChannel
     if message.author.id == master:
         if message.content.lower() == "test":
-            structpingchannel = message.channel
-            await structpingchannel.send(type(structpingchannel))
-            timedmessage.start()
-
-        if message.content.lower() == "ping":
-            try:
-                r = requests.get(URL)
-                await message.channel.send("Ping status:", r.status_code)
-            except Exception as e:
-                await message.channel.send("Ping failed:", e)
+            structPingChannel = message.channel
+            await structPingChannel.send(type(structPingChannel))
+            structurePing.start()
 
         if message.content.lower() == "dm1":
             await message.author.send("test message")
         if message.content.lower() == "dm2":
-            await masteruser.send("test message")
+            await masterUser.send("test message")
 
         if message.content.lower() == (f"{prefix}evelogin"):
             await message.channel.send(eve.make_auth_url(message.author.id))
@@ -68,6 +63,10 @@ async def on_message(message):
 
         if message.content.lower() == (f"{prefix}verify"):
             await message.channel.send(eve.verify_token(message.author.id))
+
+        if message.content.lower() == (f"{prefix}structureping"):
+            structPingChannel = message.channel
+            structurePing.start()
 
     global structstates
     if message.content.lower() == (f"{prefix}structs"):
@@ -171,20 +170,30 @@ async def on_message(message):
     await bot.process_commands(message)
 
 @tasks.loop(minutes=10)
-async def keepawake():
+async def keepAwake():
     try:
         r = requests.get(URL)
         print("Ping status:", r.status_code)
-        print("sex in da jungle")
     except Exception as e:
         print("Ping failed:", e)
 
 @tasks.loop(minutes=20)
-async def timedmessage():
-    if structpingchannel:
-        await structpingchannel.send("timed message")
+async def structurePing():
+    if structPingChannel:
+        structsdict = eve.get_corp_structures(master)
+        for s in structsdict:
+            embedColor = 0x99FF99
+            
+            embedContent = s["state"]
+            structstates[s["structure_id"]] = s["state"]
+
+            fuelleft, fueldays = eve.time_remaining(s['fuel_expires'])
+            embedContent = embedContent + "\n\n" + f"Fuel: {fuelleft}"
+            e = discord.Embed(title = s["name"], description = embedContent, color = embedColor)
+            e.set_thumbnail(url = f"https://images.evetech.net/types/{s['type_id']}/render?size=64")
+            await structPingChannel.send(embed = e)
     else:
-        timedmessage.cancel()
+        structurePing.cancel()
 
 @bot.command()
 async def test(ctx):

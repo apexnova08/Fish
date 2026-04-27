@@ -2,12 +2,14 @@ import urllib.parse
 import requests
 import json
 import os
+import base64
 
 from datetime import datetime, timezone
 
 dir = os.path.dirname(os.path.realpath(__file__))
 
 CLIENT_ID = "19c85a65b9b948d784d6bd75f6ef3c55"
+SECRET = os.getenv("EVE_SECRET")
 REDIRECT_URI = "https://fish-8v65.onrender.com/callback"
 SCOPES = "esi-corporations.read_structures.v1"
 
@@ -25,11 +27,33 @@ def make_auth_url(discord_user_id):
         })
     )
 
-def get_corp_structures(discord_id):
+def refresh_token(discord_id):
     tokensdict = {}
     with open(dir + "\\tokens.json", "r") as f: tokensdict = json.load(f)
+    auth = base64.b64encode(f"{CLIENT_ID}:{SECRET}".encode()).decode()
+
+    r = requests.post(
+        "https://login.eveonline.com/v2/oauth/token",
+        headers={
+            "Authorization": f"Basic {auth}",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        data={
+            "grant_type": "refresh_token",
+            "refresh_token": tokensdict[discord_id]["refresh_token"]
+        }
+    )
+
+    response = r.json()
+    tokensdict[discord_id]["access_token"] = response["access_token"]
+    tokensdict[discord_id]["refresh_token"] = response["refresh_token"]
+    with open(dir + "\\tokens.json", "w") as f: json.dump(tokensdict, f, indent=4)
+    return tokensdict[discord_id]
+
+def get_corp_structures(discord_id):
+    tokensdict = refresh_token(str(discord_id))
     headers = {
-        "Authorization": f"Bearer {tokensdict[str(discord_id)]["access_token"]}"
+        "Authorization": f"Bearer {tokensdict["access_token"]}"
     }
     url = "https://login.eveonline.com/oauth/verify"
     r = requests.get(url, headers=headers).json()

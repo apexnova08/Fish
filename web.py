@@ -3,6 +3,7 @@ import requests, base64
 from threading import Thread
 import json
 import os
+import eve
 
 app = Flask('')
 
@@ -18,15 +19,13 @@ def home():
 # -------------------
 # EVE CALLBACK ROUTE
 # -------------------
-CLIENT_ID = "19c85a65b9b948d784d6bd75f6ef3c55"
-SECRET = "eat_XUc72EppAuYEyAMk5uHybsEcbgi7dslo_2rHJTj"
 
 @app.route('/callback')
 def callback():
     code = request.args.get("code")
     discord_id = request.args.get("state")
 
-    auth = base64.b64encode(f"{CLIENT_ID}:{SECRET}".encode()).decode()
+    auth = base64.b64encode(f"{eve.CLIENT_ID}:{eve.SECRET}".encode()).decode()
 
     r = requests.post(
         "https://login.eveonline.com/v2/oauth/token",
