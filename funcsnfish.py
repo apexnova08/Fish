@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime, timezone
 
 dir = os.path.dirname(os.path.realpath(__file__))
 path = os.path.join(os.getcwd(), "tokens.json")
@@ -28,6 +29,11 @@ def tojsons(raw):
 def tojsonf(raw):
     try: return json.load(raw)
     except: return {}
+
+def getUTC():
+    now = datetime.now(timezone.utc)
+    time_str = now.strftime("%H:%M")
+    return time_str
 
 # -------------------
     # STEVE ONLINE

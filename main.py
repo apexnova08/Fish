@@ -32,13 +32,13 @@ async def on_ready():
     global masterUser
     masterUser = await bot.fetch_user(master)
     await masterUser.send("https://cdn.discordapp.com/attachments/1379858761417494560/1497956290394062978/awake-woke.gif?ex=69ef6802&is=69ee1682&hm=a913f9234c5993185ecfb9404fcbb5023a344004edc365adaec5ecb46e777f64")
-    if not keepAwake.is_running():
-        keepAwake.start()
-    if not monitorStructures.is_running():
-        monitorStructures.start()
+    if not keepAwake.is_running(): keepAwake.start()
+    if not monitorStructures.is_running(): monitorStructures.start()
 
 @bot.event
 async def on_message(message):
+    global eveTimeChannel
+
     if message.author == bot.user:
         return
     
@@ -46,13 +46,14 @@ async def on_message(message):
         num = ff.safeToInt(message.content.split()[1])
         await message.channel.purge(num)
 
+
     # -------------------
     # MASTER - STARTE
     # -------------------
     if message.author.id == master:
-        if message.content.lower() == "test":
-            structPingChannel = message.channel
-            await structPingChannel.send(type(structPingChannel))
+        if message.content.lower() == (f"{prefix}evetime"):
+            eveTimeChannel = message.channel
+            if not updateEveTime.is_running(): updateEveTime.start()
 
         if message.content.lower() == "dm1":
             await message.author.send("test message")
@@ -189,9 +190,16 @@ async def keepAwake():
         r = requests.get(URL)
         print("Ping status:", r.status_code)
     except Exception as e:
-        print("Ping failed:", e)
+        await masterUser.send(f"ping failed: {e}")
 
-@tasks.loop(minutes=20)
+@tasks.loop(minutes=2)
+async def updateEveTime():
+    try:
+        await eveTimeChannel.edit(name=ff.getUTC())
+    except Exception as e:
+        await masterUser.send(f"Eve time update failed: {e}")
+
+@tasks.loop(minutes=15)
 async def monitorStructures():
     try:
         profiles = ff.getAllProfiles()
