@@ -44,7 +44,7 @@ async def on_message(message):
     
     if message.content.startswith(f"{prefix}purge "):
         num = ff.safeToInt(message.content.split()[1])
-        await message.channel.purge(num)
+        await message.channel.purge(limit=num)
 
 
     # -------------------
