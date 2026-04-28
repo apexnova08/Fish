@@ -75,7 +75,12 @@ async def on_message(message):
         args = message.content.split()[1]
         if message.content == (f"{prefix}structurepings") or args == "auth":
             await message.channel.send(f"Log in your holding character [HERE]({eve.makeAuthUrl(message.author.id, message.channel.id)})")
-
+        elif args == "pinghere":
+            # stuff to do
+            await message.channel.send("no")
+        elif args == "pingstop":
+            # stop pings
+            await message.channel.send("no")
 
     global structstates
     if message.content.lower() == (f"{prefix}structs"):
@@ -186,7 +191,7 @@ async def keepAwake():
     except Exception as e:
         print("Ping failed:", e)
 
-@tasks.loop(minutes=2)
+@tasks.loop(minutes=20)
 async def monitorStructures():
     try:
         profiles = ff.getAllProfiles()
