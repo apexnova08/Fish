@@ -186,6 +186,7 @@ async def keepAwake():
 async def monitorStructures():
     try:
         profiles = ff.getAllProfiles()
+        if not profiles: return
         for p in profiles:
             channel = bot.get_channel(profiles[p]["channel"])
 
