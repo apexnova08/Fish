@@ -41,10 +41,6 @@ async def on_message(message):
 
     if message.author == bot.user:
         return
-    
-    if message.content.startswith(f"{prefix}purge "):
-        num = ff.safeToInt(message.content.split()[1])
-        await message.channel.purge(limit=num)
 
 
     # -------------------
@@ -73,7 +69,8 @@ async def on_message(message):
     # STRUCTURE PINGS
     # -------------------
     if message.content.startswith(f"{prefix}structurepings"):
-        args = message.content.split()[1]
+        s = message.content.split()
+        if len(s) > 1: args = s[1]
         if message.content == (f"{prefix}structurepings") or args == "auth":
             await message.channel.send(f"Log in your holding character [HERE]({eve.makeAuthUrl(message.author.id, message.channel.id)})")
         elif args == "pinghere":
@@ -108,6 +105,14 @@ async def on_message(message):
             await message.channel.send(embed = e)
         print(structsdict)
 
+    # -------------------
+    # ADMIN
+    # -------------------
+    if message.author.guild_permissions.administrator:
+        if message.content.startswith(f"{prefix}purge "):
+            num = ff.safeToInt(message.content.split()[1])
+            await message.channel.purge(limit=num)
+
     if ff.wordInString("pp", message.content.lower()):
         a = random.randint(1, 2)
         if a == 2:
@@ -125,7 +130,9 @@ async def on_message(message):
         await message.add_reaction("\U0001f1e8")
         await message.add_reaction("\U0001f1ea")
 
-    #Connect Four! - Start
+    # -------------------
+    # CONNECT FOURRRRRR
+    # -------------------
 
     if message.content.startswith("c4 "):
         s = message.content.split()
@@ -184,6 +191,9 @@ async def on_message(message):
     
     await bot.process_commands(message)
 
+# -------------------
+# KEEP BOT AWAKE
+# -------------------
 @tasks.loop(minutes=10)
 async def keepAwake():
     try:
@@ -192,13 +202,19 @@ async def keepAwake():
     except Exception as e:
         await masterUser.send(f"ping failed: {e}")
 
+# -------------------
+# EVE TIME
+# -------------------
 @tasks.loop(minutes=2)
 async def updateEveTime():
     try:
         await eveTimeChannel.edit(name=ff.getUTC())
     except Exception as e:
-        await masterUser.send(f"Eve time update failed: {e}")
+        await masterUser.send(f"Eve time update failed: {e} EVE TIME")
 
+# -------------------
+# STRUCTURE PINGS
+# -------------------
 @tasks.loop(minutes=15)
 async def monitorStructures():
     try:
