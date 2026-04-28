@@ -2,6 +2,7 @@ import json
 import os
 
 dir = os.path.dirname(os.path.realpath(__file__))
+path = os.path.join(os.getcwd(), "tokens.json")
 
 colors = {
     "red": 0xFF9999,
@@ -23,7 +24,7 @@ def wordInString(word, string):
 # -------------------
 def getAllProfiles():
     profiles = {}
-    with open(dir + "\\tokens.json", "r") as f: profiles = json.load(f)
+    with open(path, "r") as f: profiles = json.load(f)
     return profiles
 
 def getProfile(discordUserId):
@@ -33,5 +34,5 @@ def getProfile(discordUserId):
 def updateProfile(discordUserId, profile):
     profiles = getAllProfiles()
     profiles[discordUserId] = profile
-    with open(dir + "\\tokens.json", "w") as f: json.dump(profiles, f, indent=4)
+    with open(path, "w") as f: json.dump(profiles, f, indent=4)
     return
