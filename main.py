@@ -208,9 +208,9 @@ async def keepAwake():
 @tasks.loop(minutes=2)
 async def updateEveTime():
     try:
-        await eveTimeChannel.edit(name=ff.getUTC())
+        await eveTimeChannel.edit(name=f"{ff.getUTC()} EVE TIME")
     except Exception as e:
-        await masterUser.send(f"Eve time update failed: {e} EVE TIME")
+        await masterUser.send(f"Eve time update failed: {e}")
 
 # -------------------
 # STRUCTURE PINGS
