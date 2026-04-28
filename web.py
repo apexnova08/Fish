@@ -23,7 +23,8 @@ def home():
 @app.route('/callback')
 def callback():
     code = request.args.get("code")
-    state = ff.tojson(request.args.get("state"))
+    raw = request.args.get("state")
+    state = ff.tojson(raw)
 
     auth = base64.b64encode(f"{eve.CLIENT_ID}:{eve.SECRET}".encode()).decode()
 
@@ -41,7 +42,7 @@ def callback():
 
     user = state["user"]
     channel = state["channel"]
-    
+
     tokens = r.json()
     if channel != "none":
         tokens["channel"] = channel
