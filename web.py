@@ -24,7 +24,7 @@ def home():
 def callback():
     code = request.args.get("code")
     raw = request.args.get("state")
-    state = ff.tojson(raw)
+    state = ff.tojsons(raw)
 
     auth = base64.b64encode(f"{eve.CLIENT_ID}:{eve.SECRET}".encode()).decode()
 

@@ -18,7 +18,10 @@ def wordInString(word, string):
         return True
     else: return False
 
-def tojson(raw):
+def tojsons(raw):
+    try: return json.loads(raw)
+    except: return {}
+def tojsonf(raw):
     try: return json.load(raw)
     except: return {}
 
@@ -27,7 +30,7 @@ def tojson(raw):
 # -------------------
 def getAllProfiles():
     profiles = {}
-    with open(path, "r") as f: profiles = tojson(f)
+    with open(path, "r") as f: profiles = tojsonf(f)
     return profiles
 
 def getProfile(discordUserId):
