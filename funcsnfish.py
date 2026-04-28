@@ -23,7 +23,7 @@ def wordInString(word, string):
 # -------------------
 def getAllProfiles():
     profiles = {}
-    with open(dir + "\\profiles.json", "r") as f: profiles = json.load(f)
+    with open(dir + "\\tokens.json", "r") as f: profiles = json.load(f)
     return profiles
 
 def getProfile(discordUserId):
@@ -33,5 +33,5 @@ def getProfile(discordUserId):
 def updateProfile(discordUserId, profile):
     profiles = getAllProfiles()
     profiles[discordUserId] = profile
-    with open(dir + "\\profiles.json", "w") as f: json.dump(profiles, f, indent=4)
+    with open(dir + "\\tokens.json", "w") as f: json.dump(profiles, f, indent=4)
     return
