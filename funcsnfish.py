@@ -20,7 +20,7 @@ def wordInString(word, string):
 
 def tojson(raw):
     try: return json.load(raw)
-    except: return None
+    except: return {}
 
 # -------------------
     # STEVE ONLINE
