@@ -3,6 +3,7 @@ import requests
 import json
 import os
 import base64
+import funcsnfish as ff
 
 from datetime import datetime, timezone
 
@@ -13,9 +14,8 @@ SECRET = os.getenv("EVE_SECRET")
 REDIRECT_URI = "https://fish-8v65.onrender.com/callback"
 SCOPES = "esi-corporations.read_structures.v1"
 
-def make_auth_url(discord_user_id):
-    state = str(discord_user_id)
-
+def makeAuthUrl(userId, channel="none"):
+    user = str(userId)
     return (
         "https://login.eveonline.com/v2/oauth/authorize?"
         + urllib.parse.urlencode({
@@ -23,13 +23,13 @@ def make_auth_url(discord_user_id):
             "redirect_uri": REDIRECT_URI,
             "client_id": CLIENT_ID,
             "scope": SCOPES,
-            "state": state
+            "user": user,
+            "state": channel
         })
     )
 
-def refresh_token(discord_id):
-    tokensdict = {}
-    with open(dir + "\\tokens.json", "r") as f: tokensdict = json.load(f)
+def refreshToken(userId):
+    p = ff.getProfile(userId)
     auth = base64.b64encode(f"{CLIENT_ID}:{SECRET}".encode()).decode()
 
     r = requests.post(
@@ -40,20 +40,20 @@ def refresh_token(discord_id):
         },
         data={
             "grant_type": "refresh_token",
-            "refresh_token": tokensdict[discord_id]["refresh_token"]
+            "refresh_token": p["refresh_token"]
         }
     )
 
     response = r.json()
-    tokensdict[discord_id]["access_token"] = response["access_token"]
-    tokensdict[discord_id]["refresh_token"] = response["refresh_token"]
-    with open(dir + "\\tokens.json", "w") as f: json.dump(tokensdict, f, indent=4)
-    return tokensdict[discord_id]
+    p["access_token"] = response["access_token"]
+    p["refresh_token"] = response["refresh_token"]
+    ff.updateProfile(userId, p)
+    return p
 
-def get_corp_structures(discord_id):
-    tokensdict = refresh_token(str(discord_id))
+def getCorpStructures(userId):
+    p = refreshToken(str(userId))
     headers = {
-        "Authorization": f"Bearer {tokensdict["access_token"]}"
+        "Authorization": f"Bearer {p["access_token"]}"
     }
     url = "https://login.eveonline.com/oauth/verify"
     r = requests.get(url, headers=headers).json()
@@ -79,23 +79,23 @@ def time_remaining(timestr):
 
     return f"{weeks}w {days}d {hours}h", total_days
 
-def get_character_info(character_id, discord_id):
+def get_character_info(character_id, userId):
     url = f"https://esi.evetech.net/latest/characters/{character_id}/"
     tokensdict = {}
     with open(dir + "\\tokens.json", "r") as f: tokensdict = json.load(f)
     headers = {
-        "Authorization": f"Bearer {tokensdict[str(discord_id)]["access_token"]}"
+        "Authorization": f"Bearer {tokensdict[str(userId)]["access_token"]}"
     }
     r = requests.get(url, headers=headers)
     return r.json()
 
-def verify_token(discord_id):
+def verify_token(userId):
     tokensdict = {}
     with open(dir + "\\tokens.json", "r") as f: tokensdict = json.load(f)
     r = requests.get(
         "https://login.eveonline.com/oauth/verify",
         headers = {
-            "Authorization": f"Bearer {tokensdict[str(discord_id)]["access_token"]}"
+            "Authorization": f"Bearer {tokensdict[str(userId)]["access_token"]}"
         }
     )
     return r.json()

@@ -1,9 +1,9 @@
 from flask import Flask, request
 import requests, base64
 from threading import Thread
-import json
 import os
 import eve
+import funcsnfish as ff
 
 app = Flask('')
 
@@ -23,7 +23,8 @@ def home():
 @app.route('/callback')
 def callback():
     code = request.args.get("code")
-    discord_id = request.args.get("state")
+    user = request.args.get("user")
+    channel = request.args.get("channel")
 
     auth = base64.b64encode(f"{eve.CLIENT_ID}:{eve.SECRET}".encode()).decode()
 
@@ -40,9 +41,9 @@ def callback():
     )
 
     tokens = r.json()
-
-    tokendict = {discord_id: tokens}
-    with open(dir + "\\tokens.json", "w") as f: json.dump(tokendict, f, indent=4)
+    if channel != "none":
+        tokens["channel"] = channel
+        ff.updateProfile(user, tokens)
 
     return "Login successful. You can close this."
 

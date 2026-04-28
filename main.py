@@ -34,6 +34,8 @@ async def on_ready():
     await masterUser.send("https://cdn.discordapp.com/attachments/1379858761417494560/1497956290394062978/awake-woke.gif?ex=69ef6802&is=69ee1682&hm=a913f9234c5993185ecfb9404fcbb5023a344004edc365adaec5ecb46e777f64")
     if not keepAwake.is_running():
         keepAwake.start()
+    if not monitorStructures.is_running():
+        monitorStructures.start()
 
 @bot.event
 async def on_message(message):
@@ -43,12 +45,10 @@ async def on_message(message):
     # -------------------
     # MASTER - STARTE
     # -------------------
-    global structPingChannel
     if message.author.id == master:
         if message.content.lower() == "test":
             structPingChannel = message.channel
             await structPingChannel.send(type(structPingChannel))
-            structurePing.start()
 
         if message.content.lower() == "dm1":
             await message.author.send("test message")
@@ -64,9 +64,14 @@ async def on_message(message):
         if message.content.lower() == (f"{prefix}verify"):
             await message.channel.send(eve.verify_token(message.author.id))
 
-        if message.content.lower() == (f"{prefix}structureping"):
-            structPingChannel = message.channel
-            structurePing.start()
+    # -------------------
+    # STRUCTURE PINGS
+    # -------------------
+    if message.content.startswith(f"{prefix}structurepings"):
+        s = message.content.split()
+        if message.content == (f"{prefix}structurepings") or s[1] == "auth":
+            await message.channel.send(f"Log in your holding character [HERE]({eve.makeAuthUrl(message.author.id, message.channel.id)})")
+
 
     global structstates
     if message.content.lower() == (f"{prefix}structs"):
@@ -178,22 +183,30 @@ async def keepAwake():
         print("Ping failed:", e)
 
 @tasks.loop(minutes=20)
-async def structurePing():
-    if structPingChannel:
-        structsdict = eve.get_corp_structures(master)
-        for s in structsdict:
-            embedColor = 0x99FF99
-            
-            embedContent = s["state"]
-            structstates[s["structure_id"]] = s["state"]
+async def monitorStructures():
+    try:
+        profiles = ff.getAllProfiles()
+        for p in profiles:
+            channel = bot.get_channel(profiles[p]["channel"])
 
-            fuelleft, fueldays = eve.time_remaining(s['fuel_expires'])
-            embedContent = embedContent + "\n\n" + f"Fuel: {fuelleft}"
-            e = discord.Embed(title = s["name"], description = embedContent, color = embedColor)
-            e.set_thumbnail(url = f"https://images.evetech.net/types/{s['type_id']}/render?size=64")
-            await structPingChannel.send(embed = e)
-    else:
-        structurePing.cancel()
+            # DELETE ALL MESSAGES IN CHANNEL
+            async for msg in channel.history(limit=None):
+                await msg.delete()
+
+            structures = eve.get_corp_structures(p)
+            for s in structures:
+                embedColor = ff.colors["green"]
+                embedContent = s["state"]
+
+                fuelleft, fueldays = eve.time_remaining(s['fuel_expires'])
+                embedContent = embedContent + "\n\n" + f"Fuel: {fuelleft}"
+                e = discord.Embed(title = s["name"], description = embedContent, color = embedColor)
+                e.set_thumbnail(url = f"https://images.evetech.net/types/{s['type_id']}/render?size=64")
+                await channel.send(embed = e)
+
+    except Exception as e:
+        await masterUser.send(f"structurepings failure: {e}")
+        return
 
 @bot.command()
 async def test(ctx):
