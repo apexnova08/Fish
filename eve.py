@@ -15,7 +15,11 @@ REDIRECT_URI = "https://fish-8v65.onrender.com/callback"
 SCOPES = "esi-corporations.read_structures.v1"
 
 def makeAuthUrl(userId, channel="none"):
-    user = str(userId)
+    state = json.dumps({
+        "user": str(userId),
+        "channel": channel
+    })
+
     return (
         "https://login.eveonline.com/v2/oauth/authorize?"
         + urllib.parse.urlencode({
@@ -23,8 +27,7 @@ def makeAuthUrl(userId, channel="none"):
             "redirect_uri": REDIRECT_URI,
             "client_id": CLIENT_ID,
             "scope": SCOPES,
-            "user": user,
-            "state": channel
+            "state": state
         })
     )
 
