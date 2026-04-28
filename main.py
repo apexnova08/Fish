@@ -195,7 +195,7 @@ async def monitorStructures():
             async for msg in channel.history(limit=None):
                 await msg.delete()
 
-            structures = eve.get_corp_structures(p)
+            structures = eve.getCorpStructures(p)
             for s in structures:
                 embedColor = ff.colors["green"]
                 embedContent = s["state"]
