@@ -18,13 +18,16 @@ def wordInString(word, string):
         return True
     else: return False
 
+def tojson(raw):
+    try: return json.load(raw)
+    except: return None
 
 # -------------------
     # STEVE ONLINE
 # -------------------
 def getAllProfiles():
     profiles = {}
-    with open(path, "r") as f: profiles = json.load(f)
+    with open(path, "r") as f: profiles = tojson(f)
     return profiles
 
 def getProfile(discordUserId):
