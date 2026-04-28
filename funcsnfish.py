@@ -18,6 +18,10 @@ def wordInString(word, string):
         return True
     else: return False
 
+def safeToInt(string):
+    try: return int(string)
+    except: return 0
+
 def tojsons(raw):
     try: return json.loads(raw)
     except: return {}

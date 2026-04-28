@@ -42,6 +42,10 @@ async def on_message(message):
     if message.author == bot.user:
         return
     
+    if message.content.startswith(f"{prefix}purge "):
+        num = ff.safeToInt(message.content.split()[1])
+        await message.channel.purge(num)
+
     # -------------------
     # MASTER - STARTE
     # -------------------
@@ -68,8 +72,8 @@ async def on_message(message):
     # STRUCTURE PINGS
     # -------------------
     if message.content.startswith(f"{prefix}structurepings"):
-        s = message.content.split()
-        if message.content == (f"{prefix}structurepings") or s[1] == "auth":
+        args = message.content.split()[1]
+        if message.content == (f"{prefix}structurepings") or args == "auth":
             await message.channel.send(f"Log in your holding character [HERE]({eve.makeAuthUrl(message.author.id, message.channel.id)})")
 
 
@@ -186,7 +190,6 @@ async def keepAwake():
 async def monitorStructures():
     try:
         profiles = ff.getAllProfiles()
-        await masterUser.send(profiles)
         if not profiles: return
         for p in profiles:
             channel = bot.get_channel(profiles[p]["channel"])
