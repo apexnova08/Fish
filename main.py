@@ -182,7 +182,7 @@ async def keepAwake():
     except Exception as e:
         print("Ping failed:", e)
 
-@tasks.loop(minutes=20)
+@tasks.loop(minutes=2)
 async def monitorStructures():
     try:
         profiles = ff.getAllProfiles()
