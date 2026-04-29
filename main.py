@@ -245,7 +245,7 @@ async def updateEveTime():
     while not bot.is_closed():
         try:
             utcNow = ff.getUTC()
-            evetimeStr = utcNow.strftime("%H:%M")
+            evetimeStr = f"{utcNow.strftime("%H:%M")} EVE TIME"
             if eveTimeChannel and eveTimeChannel.name != evetimeStr:
                 await eveTimeChannel.edit(name=evetimeStr)
                 await asyncio.sleep(120 - utcNow.second)
