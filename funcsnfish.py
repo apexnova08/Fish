@@ -31,9 +31,12 @@ def tojsonf(raw):
     except: return {}
 
 def getUTC():
-    now = datetime.now(timezone.utc)
-    time_str = now.strftime("%H:%M")
-    return time_str
+    utcnow = datetime.now(timezone.utc)
+    return utcnow
+def getUTC_HM():
+    utcnow = datetime.now(timezone.utc)
+    timeStr = utcnow.strftime("%H:%M")
+    return timeStr
 
 # -------------------
     # STEVE ONLINE

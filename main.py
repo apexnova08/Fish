@@ -6,6 +6,7 @@ import random
 import eve
 import web
 import requests
+import asyncio
 import funcsnfish as ff
 
 import c4
@@ -26,6 +27,7 @@ bot = commands.Bot(command_prefix=prefix, intents=intents)
 # VARS #
 URL = "https://fish-8v65.onrender.com/"
 structstates = {}
+eveTimeTaskRunning = False
 
 @bot.event
 async def on_ready():
@@ -38,10 +40,11 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     global eveTimeChannel
+    global eveTimeTaskRunning
 
     if message.author == bot.user:
         return
-
+    
 
     # -------------------
     # MASTER - STARTE
@@ -49,7 +52,9 @@ async def on_message(message):
     if message.author.id == master:
         if message.content.lower() == (f"{prefix}evetime"):
             eveTimeChannel = message.channel
-            if not updateEveTime.is_running(): updateEveTime.start()
+            if not eveTimeTaskRunning:
+                bot.loop.create_task(updateEveTime())
+                eveTimeTaskRunning = True
 
         if message.content.lower() == "dm1":
             await message.author.send("test message")
@@ -72,7 +77,7 @@ async def on_message(message):
         s = message.content.split()
         if len(s) > 1: args = s[1]
         if message.content == (f"{prefix}structurepings") or args == "auth":
-            await message.channel.send(f"Log in your holding character [HERE]({eve.makeAuthUrl(message.author.id, message.channel.id)})")
+            await message.author.send(f"Log in your holding character [HERE]({eve.makeAuthUrl(message.author.id, message.channel.id)})")
         elif args == "pinghere":
             # stuff to do
             await message.channel.send("no")
@@ -203,16 +208,6 @@ async def keepAwake():
         await masterUser.send(f"ping failed: {e}")
 
 # -------------------
-# EVE TIME
-# -------------------
-@tasks.loop(minutes=2)
-async def updateEveTime():
-    try:
-        await eveTimeChannel.edit(name=f"{ff.getUTC()} EVE TIME")
-    except Exception as e:
-        await masterUser.send(f"Eve time update failed: {e}")
-
-# -------------------
 # STRUCTURE PINGS
 # -------------------
 @tasks.loop(minutes=15)
@@ -241,6 +236,21 @@ async def monitorStructures():
     except Exception as e:
         await masterUser.send(f"structurepings failure: {e}")
         return
+
+# -------------------
+# EVE TIME
+# -------------------
+async def updateEveTime():
+    await bot.wait_until_ready()
+    while not bot.is_closed():
+        try:
+            utcNow = ff.getUTC()
+            evetimeStr = utcNow.strftime("%H:%M")
+            if eveTimeChannel and eveTimeChannel.name != evetimeStr:
+                await eveTimeChannel.edit(name=evetimeStr)
+                await asyncio.sleep(120 - utcNow.second)
+        except Exception as e:
+            await masterUser.send(f"Eve time update failed: {e}")
 
 @bot.command()
 async def test(ctx):
