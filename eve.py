@@ -3,7 +3,6 @@ import requests
 import json
 import os
 import base64
-import funcsnfish as ff
 import hotstuff as hs
 
 from datetime import datetime, timezone

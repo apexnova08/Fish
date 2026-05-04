@@ -239,9 +239,11 @@ async def updateEveTime():
             eveTime = ff.getEVETime()
             if eveTimeChannel and eveTime and eveTimeChannel.name != eveTime:
                 await eveTimeChannel.edit(name=eveTime)
-                await asyncio.sleep(60 - utcNow.second)
+
         except Exception as e:
             await masterUser.send(f"Eve time update failed: {e}")
+        
+        await asyncio.sleep(60 - utcNow.second)
 
 @bot.command()
 async def test(ctx):
