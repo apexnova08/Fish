@@ -41,6 +41,12 @@ def getUTC_HM():
 # -------------------
     # STEVE ONLINE
 # -------------------
+def getEVETime():
+    now = getUTC()
+    if now.minute % 5 == 0 or now.minute == 0:
+        return f"{now.strftime("%H:%M")} EVE TIME"
+    else: return None
+    
 def getAllProfiles():
     profiles = {}
     with open(path, "r") as f: profiles = tojsonf(f)

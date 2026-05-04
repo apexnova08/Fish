@@ -8,6 +8,7 @@ import web
 import requests
 import asyncio
 import funcsnfish as ff
+import hotstuff as hs
 
 import c4
 from c4 import c4match
@@ -50,25 +51,15 @@ async def on_message(message):
     # MASTER - STARTE
     # -------------------
     if message.author.id == master:
+        if message.content == "test":
+            #test stuff here
+            hs.test()
+            await message.channel.send("test")
         if message.content.lower() == (f"{prefix}evetime"):
             eveTimeChannel = message.channel
             if not eveTimeTaskRunning:
                 bot.loop.create_task(updateEveTime())
                 eveTimeTaskRunning = True
-
-        if message.content.lower() == "dm1":
-            await message.author.send("test message")
-        if message.content.lower() == "dm2":
-            await masterUser.send("test message")
-
-        if message.content.lower() == (f"{prefix}evelogin"):
-            await message.channel.send(eve.make_auth_url(message.author.id))
-
-        if message.content.lower() == (f"{prefix}info"):
-            await message.channel.send(eve.get_character_info("2123045230", message.author.id))
-
-        if message.content.lower() == (f"{prefix}verify"):
-            await message.channel.send(eve.verify_token(message.author.id))
 
     # -------------------
     # STRUCTURE PINGS
@@ -245,10 +236,10 @@ async def updateEveTime():
     while not bot.is_closed():
         try:
             utcNow = ff.getUTC()
-            evetimeStr = f"{utcNow.strftime("%H:%M")} EVE TIME"
-            if eveTimeChannel and eveTimeChannel.name != evetimeStr:
-                await eveTimeChannel.edit(name=evetimeStr)
-                await asyncio.sleep(120 - utcNow.second)
+            eveTime = ff.getEVETime()
+            if eveTimeChannel and eveTime and eveTimeChannel.name != eveTime:
+                await eveTimeChannel.edit(name=eveTime)
+                await asyncio.sleep(60 - utcNow.second)
         except Exception as e:
             await masterUser.send(f"Eve time update failed: {e}")
 

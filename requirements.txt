@@ -2,3 +2,4 @@ discord.py
 urllib3
 Flask
 requests
+firebase-admin
