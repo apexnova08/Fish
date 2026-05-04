@@ -11,18 +11,24 @@ def test():
         "name": "Cap'n Wiggleboots",
         "level": 5
     })
-'''
-def getAllProfiles():
+
+def spCreateProfile(discordUserId, profile):
+    db.collection("structurepings").document(discordUserId).set(profile)
+    return
+
+def spUpdateProfile(discordUserId, field, newValue):
+    record = db.collection("structurepings").document(discordUserId).get()
+    if record.exists:
+        db.collection("structurepings").document(discordUserId).update({field: newValue})
+    return
+
+def spGetAllProfiles():
     profiles = {}
-    with open(path, "r") as f: profiles = tojsonf(f)
+    for doc in db.collection("structurepings").stream():
+        profiles[doc.id] = doc.to_dict()
     return profiles
 
-def getProfile(discordUserId):
-    profiles = getAllProfiles()
-    return profiles[discordUserId]
-
-def updateProfile(discordUserId, profile):
-    profiles = getAllProfiles()
-    profiles[discordUserId] = profile
-    with open(path, "w") as f: json.dump(profiles, f, indent=4)
-    return'''
+def spGetProfile(discordUserId):
+    record = db.collection("structurepings").document(discordUserId).get()
+    if record.exists: return record.to_dict()
+    else: return None

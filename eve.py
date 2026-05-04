@@ -4,6 +4,7 @@ import json
 import os
 import base64
 import funcsnfish as ff
+import hotstuff as hs
 
 from datetime import datetime, timezone
 
@@ -33,7 +34,7 @@ def makeAuthUrl(userId, channel="none"):
     )
 
 def refreshToken(userId):
-    p = ff.getProfile(userId)
+    p = hs.spGetProfile(userId)
     auth = base64.b64encode(f"{CLIENT_ID}:{SECRET}".encode()).decode()
 
     r = requests.post(
@@ -49,9 +50,8 @@ def refreshToken(userId):
     )
 
     response = r.json()
-    p["access_token"] = response["access_token"]
-    p["refresh_token"] = response["refresh_token"]
-    ff.updateProfile(userId, p)
+    hs.spUpdateProfile(userId, "access_token", response["access_token"])
+    hs.spUpdateProfile(userId, "refresh_token", response["refresh_token"])
     return p
 
 def getCorpStructures(userId):

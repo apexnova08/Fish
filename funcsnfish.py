@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timezone
 
 dir = os.path.dirname(os.path.realpath(__file__))
-path = os.path.join(os.getcwd(), "tokens.json")
+#path = os.path.join(os.getcwd(), "tokens.json")
 
 colors = {
     "red": 0xFF9999,
@@ -46,7 +46,7 @@ def getEVETime():
     if now.minute % 5 == 0 or now.minute == 0:
         return f"{now.strftime('%H:%M')} EVE TIME"
     else: return None
-
+'''
 def getAllProfiles():
     profiles = {}
     with open(path, "r") as f: profiles = tojsonf(f)
@@ -60,4 +60,4 @@ def updateProfile(discordUserId, profile):
     profiles = getAllProfiles()
     profiles[discordUserId] = profile
     with open(path, "w") as f: json.dump(profiles, f, indent=4)
-    return
+    return'''

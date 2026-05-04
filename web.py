@@ -47,7 +47,7 @@ def callback():
     tokens = r.json()
     if channel != "none":
         tokens["channel"] = channel
-        ff.updateProfile(user, tokens)
+        hs.spCreateProfile(user, tokens)
 
     return "Login successful. You can close this."
 

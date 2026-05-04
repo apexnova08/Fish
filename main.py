@@ -204,7 +204,7 @@ async def keepAwake():
 @tasks.loop(minutes=15)
 async def monitorStructures():
     try:
-        profiles = ff.getAllProfiles()
+        profiles = hs.spGetAllProfiles()
         if not profiles: return
         for p in profiles:
             channel = bot.get_channel(profiles[p]["channel"])
