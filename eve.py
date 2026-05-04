@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 
 dir = os.path.dirname(os.path.realpath(__file__))
 
+TOKEN_LINK = "https://login.eveonline.com/v2/oauth/token"
 CLIENT_ID = "19c85a65b9b948d784d6bd75f6ef3c55"
 SECRET = os.getenv("EVE_SECRET")
 REDIRECT_URI = "https://fish-8v65.onrender.com/callback"
@@ -36,7 +37,7 @@ def refreshToken(userId):
     auth = base64.b64encode(f"{CLIENT_ID}:{SECRET}".encode()).decode()
 
     r = requests.post(
-        "https://login.eveonline.com/v2/oauth/token",
+        TOKEN_LINK,
         headers={
             "Authorization": f"Basic {auth}",
             "Content-Type": "application/x-www-form-urlencoded"

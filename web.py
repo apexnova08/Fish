@@ -4,6 +4,7 @@ from threading import Thread
 import os
 import eve
 import funcsnfish as ff
+import hotstuff as hs
 
 app = Flask('')
 
@@ -29,7 +30,7 @@ def callback():
     auth = base64.b64encode(f"{eve.CLIENT_ID}:{eve.SECRET}".encode()).decode()
 
     r = requests.post(
-        "https://login.eveonline.com/v2/oauth/token",
+        eve.TOKEN_LINK,
         headers={
             "Authorization": f"Basic {auth}",
             "Content-Type": "application/x-www-form-urlencoded"

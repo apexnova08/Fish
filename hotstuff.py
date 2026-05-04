@@ -11,3 +11,18 @@ def test():
         "name": "Cap'n Wiggleboots",
         "level": 5
     })
+'''
+def getAllProfiles():
+    profiles = {}
+    with open(path, "r") as f: profiles = tojsonf(f)
+    return profiles
+
+def getProfile(discordUserId):
+    profiles = getAllProfiles()
+    return profiles[discordUserId]
+
+def updateProfile(discordUserId, profile):
+    profiles = getAllProfiles()
+    profiles[discordUserId] = profile
+    with open(path, "w") as f: json.dump(profiles, f, indent=4)
+    return'''
