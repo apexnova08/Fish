@@ -37,6 +37,13 @@ async def on_ready():
     await masterUser.send("https://cdn.discordapp.com/attachments/1379858761417494560/1497956290394062978/awake-woke.gif?ex=69ef6802&is=69ee1682&hm=a913f9234c5993185ecfb9404fcbb5023a344004edc365adaec5ecb46e777f64")
     if not keepAwake.is_running(): keepAwake.start()
     if not monitorStructures.is_running(): monitorStructures.start()
+    await bot.change_presence(
+        status=discord.Status.online,
+        activity=discord.Activity(
+            type=discord.ActivityType.watching,
+            name="wormholes"
+        )
+    )
 
 @bot.event
 async def on_message(message):
@@ -210,8 +217,7 @@ async def monitorStructures():
             channel = bot.get_channel(profiles[p]["channel"])
 
             # DELETE ALL MESSAGES IN CHANNEL
-            async for msg in channel.history(limit=None):
-                await msg.delete()
+            await channel.purge(limit=100)
 
             structures = eve.getCorpStructures(p)
             for s in structures:
@@ -236,14 +242,16 @@ async def updateEveTime():
     while not bot.is_closed():
         try:
             utcNow = ff.getUTC()
-            eveTime = ff.getEVETime()
+            eveTime = ff.getEVETime(utcNow)
             if eveTimeChannel and eveTime and eveTimeChannel.name != eveTime:
                 await eveTimeChannel.edit(name=eveTime)
 
         except Exception as e:
             await masterUser.send(f"Eve time update failed: {e}")
+            await asyncio.sleep(5)
         
-        await asyncio.sleep(60 - utcNow.second)
+        utcNow = ff.getUTC()
+        await asyncio.sleep(max(1, 60 - utcNow.second))
 
 @bot.command()
 async def test(ctx):

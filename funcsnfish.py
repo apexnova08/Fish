@@ -41,9 +41,9 @@ def getUTC_HM():
 # -------------------
     # STEVE ONLINE
 # -------------------
-def getEVETime():
-    now = getUTC()
-    if now.minute % 5 == 0 or now.minute == 0:
+def getEVETime(now):
+    if not now: now = getUTC()
+    if now.minute % 5 == 0:
         return f"{now.strftime('%H:%M')} EVE TIME"
     else: return None
 '''
